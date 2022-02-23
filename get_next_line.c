@@ -6,11 +6,16 @@
 /*   By: lleiria- <lleiria-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:50:50 by lleiria-          #+#    #+#             */
-/*   Updated: 2022/02/22 16:34:49 by lleiria-         ###   ########.fr       */
+/*   Updated: 2022/02/23 17:11:11 by lleiria-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+
+static char *feed_storage(char **storage, char **buffer, size_t valid)
+{
+	
+}
 
 char	*get_next_line(int fd)
 {
@@ -45,16 +50,30 @@ char	*get_next_line(int fd)
 	menor ou maior é invalido.
 
 |||||||||||||||||||-Terceira Condição-||||||||||||||||||||
+	
 	O BUFFER_SIZE, que será dado pela flag do compilador, näo pode
 	ser menor ou igual a zero, pois assim nada será lido.
 */
 	valid = 1;
 	returner = NULL;
 	buffer = ft_strchr(storage, '\n');
+/*	com o ft_strchr verificamos se existealgo no armazenamento (storage) e se caso
+	exista enviamos o seu conteudo até à primeira quebra de linha (\n) encontrada
+	para o buffer
+*/
+//caso o buffer esteja vazio ou não haja quebra de linha, é necessário enchê-lo
 	if (!buffer)
 	{
 		buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
-		if (!buffer)
+//Alocamos a memória necessária para o buffer + 1 um espaço para o nulo do final da string
+		if (!buffer)//Se mesmo assim não existir nada no buffer, então deu erro
 			return (0);
+		while (returner == NULL && valid > 0)
+		{
+			valid = read(fd, buffer, BUFFER_SIZE);
+			returner = feed_storage(&storage, &buffer, valid);
+		}
+		free (buffer);
+		return (returner);
 	}
 }
