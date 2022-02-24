@@ -6,7 +6,7 @@
 /*   By: lleiria- <lleiria-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:52:14 by lleiria-          #+#    #+#             */
-/*   Updated: 2022/02/18 15:39:53 by lleiria-         ###   ########.fr       */
+/*   Updated: 2022/02/24 18:23:04 by lleiria-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,4 +19,14 @@ char	*ft_strchr(const char *str, int c)
 	if (*str == (unsigned char)c)
 		return ((char *)str);
 	return (NULL);
+
+size_t	ft_strlen(const char	*str)
+{
+	size_t	n;
+
+	n = 0;
+	while (str[n] != '\0')
+		n++;
+	return (n);
+}
 	
