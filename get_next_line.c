@@ -6,7 +6,7 @@
 /*   By: lleiria- <lleiria-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:50:50 by lleiria-          #+#    #+#             */
-/*   Updated: 2022/02/24 18:36:37 by lleiria-         ###   ########.fr       */
+/*   Updated: 2022/03/02 17:20:37 by lleiria-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,25 @@
 
 static	char *valid_buffer(char **storage, char **buffer, size_t buflen)
 {
+//buflen o tamanho válido de bytes necessário para retornar uma linha
+//inteira depois de concatenar a storage com o buffer.
 	char	*returner;
 	char	*tmp;
 	size_t	storlen;
 
-	storlen = ft_strlen(*storage);
+	storlen = ft_strlen(*storage);//Saber o tamanho da storage para quando a copiarmos
 	returner = (char *)malloc(sizeof(char) * buflen + storlen + 1);
-	if (!ret)
+//Alocamos a memória com o tamanho do buffer até à quebra de linha para retornar
+	if (!returner)
 		return (0);
+	ft_memcpy(returner, *storage, storlen);
+	ft_memcpy(returner + storlen, *buffer, buflen);
+	returner[storlen + buflen] = '\0';
+	tmp = ft_strdup((*buffer) + buflen);
+	if (*storage)
+		free(*storage);
+	(*storage) = tmp;
+	return (returner);
 }
 
 static	char *feed_storage(char **storage, char **buffer, size_t valid)
@@ -40,7 +51,7 @@ static	char *feed_storage(char **storage, char **buffer, size_t valid)
 		}
 		return (returner);
 	}
-	(*buffer)[valid] = '\0';
+	(*buffer)[valid] = '\0';//não entendi
 	tmp = ft_strchr(*buffer, '\n');//procurar uma nova linha no buffer
 	if (tmp)
 		returner = valid_buffer(storage, buffer, (tmp - *buffer) + 1);
@@ -81,7 +92,7 @@ char	*get_next_line(int fd)
 
 |||||||||||||||||||-Segunda Condição-||||||||||||||||||||
 
-	O limite do fd só pode ter valores entre 0 e 1024, qualquer valor
+	O fd só pode ter valores entre 0 e 1024, qualquer valor
 	menor ou maior é invalido.
 
 |||||||||||||||||||-Terceira Condição-||||||||||||||||||||
@@ -118,7 +129,7 @@ char	*get_next_line(int fd)
 			valid = read(fd, buffer, BUFFER_SIZE);
 //Lemos (read) um BUFFER_SIZE número de caracteres e armazenamos no ponteiro buffer (nāo entendi)
 			returner = feed_storage(&storage, &buffer, valid);
-//Enchemos entāo a storage com tudo o que o buffer encontrar e colocar no returner a storage ou o buffer
+//Enchemos entāo a storage com tudo o que o buffer encontrar e colocamos no returner a storage ou o buffer
 		}
 		free (buffer);
 		return (returner);
