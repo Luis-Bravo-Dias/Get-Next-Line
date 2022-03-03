@@ -6,7 +6,7 @@
 /*   By: lleiria- <lleiria-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:50:50 by lleiria-          #+#    #+#             */
-/*   Updated: 2022/03/02 17:20:37 by lleiria-         ###   ########.fr       */
+/*   Updated: 2022/03/03 18:38:06 by lleiria-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static	char *valid_buffer(char **storage, char **buffer, size_t buflen)
 {
-//buflen o tamanho válido de bytes necessário para retornar uma linha
+//buflen é o tamanho válido de bytes necessário para retornar uma linha
 //inteira depois de concatenar a storage com o buffer.
 	char	*returner;
 	char	*tmp;
@@ -22,17 +22,21 @@ static	char *valid_buffer(char **storage, char **buffer, size_t buflen)
 
 	storlen = ft_strlen(*storage);//Saber o tamanho da storage para quando a copiarmos
 	returner = (char *)malloc(sizeof(char) * buflen + storlen + 1);
-//Alocamos a memória com o tamanho do buffer até à quebra de linha para retornar
+//Alocamos a memória com o tamanho total do buffer até à quebra de linha para retornar
 	if (!returner)
 		return (0);
-	ft_memcpy(returner, *storage, storlen);
+	ft_memcpy(returner, *storage, storlen);//copiamos o conteudo da storage para o returner
 	ft_memcpy(returner + storlen, *buffer, buflen);
+//Depois copia-se um número buflen de caracteres do buffer 
+//para o returner com o tamanho total da storage
 	returner[storlen + buflen] = '\0';
+//Um nulo para fechar a string da nova linha após os tamanhos do buffer e da storage
 	tmp = ft_strdup((*buffer) + buflen);
+//Uma variavel temporaria onde estará o que restou do buffer e que será mandado para a storage
 	if (*storage)
-		free(*storage);
-	(*storage) = tmp;
-	return (returner);
+		free(*storage);//libertamos a memória alocada na storage
+	(*storage) = tmp;//e transferimos o restante conteudo do buffer
+	return (returner);//retornamos então a linha
 }
 
 static	char *feed_storage(char **storage, char **buffer, size_t valid)
@@ -61,6 +65,38 @@ static	char *feed_storage(char **storage, char **buffer, size_t valid)
 	menos (-) o endereço inicial do buffer (o que será o tamanho da string
 	dentro do buffer) + 1 espaço para o nulo no final.
 */
+	else
+	{
+		tmp = ft_strjoin(*storage, buffer);
+//Se não existir tmp, então não encontrou uma nova linha, por isso
+//concatenamos a storage e o buffer e enviamos para o tmp
+//Assim o returner será nulo (porquê?) e isso vai ativar novamente o while loop da função principal
+		if (*storage)
+			free(*storage);
+		*storage = tmp;
+	}
+	return (returner);//returnamos a nova linha
+}
+
+static char	*valid_storage(char **storage, size_t size)
+{
+	char	*tmp;
+	char	*returner;
+	size_t	n;
+
+	if (size < 0)
+		return (0);
+	returner = malloc(sizeof(char) * (size + 1));
+	if (!returner)
+		return (0);
+	n = -1;
+	while (++n != size)
+		returner[n] = (*storage)[n];
+	returner[n] = '\0';
+	tmp = ft_strdup(*storage + n);
+	free (*storage);
+	(*storage) = tmp;
+	return (returner);
 }
 
 char	*get_next_line(int fd)
@@ -127,11 +163,20 @@ char	*get_next_line(int fd)
 		while (returner == NULL && valid > 0)
 		{
 			valid = read(fd, buffer, BUFFER_SIZE);
-//Lemos (read) um BUFFER_SIZE número de caracteres e armazenamos no ponteiro buffer (nāo entendi)
+//Lemos (read) um BUFFER_SIZE número de caracteres e
+//armazenamos no ponteiro buffer (nāo entendi)
 			returner = feed_storage(&storage, &buffer, valid);
-//Enchemos entāo a storage com tudo o que o buffer encontrar e colocamos no returner a storage ou o buffer
+//Enchemos entāo a storage com tudo o que o buffer encontrar e
+//colocamos no returner a storage ou o buffer
 		}
 		free (buffer);
-		return (returner);
+//libertamos a memória do buffer após tê-lo transportado para a storage,
+//preparando o buffer para o próximo loop
+		return (returner);//retornamos a linha
 	}
+	returner = valid_storage(&storage, (buffer - storage) + 1);
+//Se houver uma quebra de linha dentro da storage, colocamos tudo
+//até essa quebra de linha no returner e limpamos o conteudo usado
+//da storage, deixando apenas o que está depois da quebra de linha
+	return (returner);
 }
