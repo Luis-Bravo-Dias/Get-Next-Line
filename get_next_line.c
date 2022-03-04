@@ -6,7 +6,7 @@
 /*   By: lleiria- <lleiria-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:50:50 by lleiria-          #+#    #+#             */
-/*   Updated: 2022/03/03 18:38:06 by lleiria-         ###   ########.fr       */
+/*   Updated: 2022/03/04 15:17:45 by lleiria-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,14 @@ static	char *valid_buffer(char **storage, char **buffer, size_t buflen)
 	returner = (char *)malloc(sizeof(char) * buflen + storlen + 1);
 //Alocamos a memória com o tamanho total do buffer até à quebra de linha para retornar
 	if (!returner)
-		return (0);
+		return (0);//se não houver returner, deu erro
 	ft_memcpy(returner, *storage, storlen);//copiamos o conteudo da storage para o returner
 	ft_memcpy(returner + storlen, *buffer, buflen);
 //Depois copia-se um número buflen de caracteres do buffer 
 //para o returner com o tamanho total da storage
 	returner[storlen + buflen] = '\0';
 //Um nulo para fechar a string da nova linha após os tamanhos do buffer e da storage
-	tmp = ft_strdup((*buffer) + buflen);
+	tmp = ft_strdup((*buffer) + buflen);//Porquê buffer + buflen?
 //Uma variavel temporaria onde estará o que restou do buffer e que será mandado para a storage
 	if (*storage)
 		free(*storage);//libertamos a memória alocada na storage
@@ -53,9 +53,9 @@ static	char *feed_storage(char **storage, char **buffer, size_t valid)
 			returner = (*storage);//Redireciona-se o ponteiro returner para o conteudo da storage
 			*storage = NULL;//enquanto a storage passa a apontar para nulo.
 		}
-		return (returner);
+		return (returner);//returnamos o returner com o conteudo da storage
 	}
-	(*buffer)[valid] = '\0';//não entendi
+	(*buffer)[valid] = '\0';//não entendi porque se usa o valor do valid
 	tmp = ft_strchr(*buffer, '\n');//procurar uma nova linha no buffer
 	if (tmp)
 		returner = valid_buffer(storage, buffer, (tmp - *buffer) + 1);
@@ -70,33 +70,43 @@ static	char *feed_storage(char **storage, char **buffer, size_t valid)
 		tmp = ft_strjoin(*storage, buffer);
 //Se não existir tmp, então não encontrou uma nova linha, por isso
 //concatenamos a storage e o buffer e enviamos para o tmp
-//Assim o returner será nulo (porquê?) e isso vai ativar novamente o while loop da função principal
+//Assim o returner será nulo e isso vai ativar novamente o while loop da função principal
 		if (*storage)
 			free(*storage);
 		*storage = tmp;
 	}
-	return (returner);//returnamos a nova linha
+	return (returner);//returnamos a nova linha ou o nulo
 }
 
 static char	*valid_storage(char **storage, size_t size)
 {
+/*
+	Se houver uma nova linha dentro da storage, significa que não precisamos
+	encher o buffer com o conteudo do ficheiro.
+	Só precisamos de marcar o endereço da nova linha dentro da storage.
+	Então pegamos em tudo da storage até à quebra de linha, passar para o
+	returner, limpar a storage e mandá-la de volta.
+*/
 	char	*tmp;
 	char	*returner;
 	size_t	n;
 
-	if (size < 0)
-		return (0);
+	if (size < 0)//Se o size (endereço da nova linha - o endereço inicial da storage)
+		return (0);//for menor que 0, então deu erro
 	returner = malloc(sizeof(char) * (size + 1));
 	if (!returner)
 		return (0);
-	n = -1;
-	while (++n != size)
-		returner[n] = (*storage)[n];
+	n = -1;//incializa-se a variavel com -1 em vez de zero, pois vamos
+	while (++n != size)//incrimentá-la durante a comparação, antes de compará-la com o size
+		returner[n] = (*storage)[n];//Enquanto este loop for válido, colocamos no returner
+//o conteudo da storage.
 	returner[n] = '\0';
 	tmp = ft_strdup(*storage + n);
-	free (*storage);
-	(*storage) = tmp;
-	return (returner);
+//	Então colocamos uma string duplicada da storage na variavel temporaria,
+//	porém apenas o endereço após a quebra de linha (+ n).
+	free (*storage);//limpamos a memória alucada na storage
+	(*storage) = tmp;///E fazemos a storage apontar para o conteudo duplicado
+	return (returner);//returnamos a linha agora com o nulo no final da string
 }
 
 char	*get_next_line(int fd)
@@ -163,7 +173,7 @@ char	*get_next_line(int fd)
 		while (returner == NULL && valid > 0)
 		{
 			valid = read(fd, buffer, BUFFER_SIZE);
-//Lemos (read) um BUFFER_SIZE número de caracteres e
+//Lemos (read) um número BUFFER_SIZE de caracteres e
 //armazenamos no ponteiro buffer (nāo entendi)
 			returner = feed_storage(&storage, &buffer, valid);
 //Enchemos entāo a storage com tudo o que o buffer encontrar e
