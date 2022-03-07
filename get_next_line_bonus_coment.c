@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
+/*   get_next_line_bonus_coment.c                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lleiria- <lleiria-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/04 16:47:55 by lleiria-          #+#    #+#             */
-/*   Updated: 2022/03/07 12:43:52 by lleiria-         ###   ########.fr       */
+/*   Created: 2022/03/07 12:34:37 by lleiria-          #+#    #+#             */
+/*   Updated: 2022/03/07 12:43:29 by lleiria-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ static char	*valid_storage(char **storage, size_t size)
 
 char	*get_next_line(int fd)
 {
-	static char	*storage[1024];
+	static char	*storage[1024];//fazemos da storage uma array com o tamanho máximmo possivel de fd
 	char		*buffer;
 	char		*returner;
 	size_t		valid;
@@ -94,6 +94,7 @@ char	*get_next_line(int fd)
 	valid = 1;
 	returner = NULL;
 	buffer = ft_strchr(storage[fd], '\n');
+//sempre que usamos a array de storage, usamos o fd como index
 	if (!buffer)
 	{
 		buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
