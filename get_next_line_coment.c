@@ -6,7 +6,7 @@
 /*   By: lleiria- <lleiria-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/07 11:33:54 by lleiria-          #+#    #+#             */
-/*   Updated: 2022/03/07 12:59:15 by lleiria-         ###   ########.fr       */
+/*   Updated: 2022/03/08 11:29:58 by lleiria-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ static	char *feed_storage(char **storage, char **buffer, size_t valid)
 */
 	else
 	{
-		tmp = ft_strjoin(*storage, buffer);
+		tmp = ft_strjoin(*storage, *buffer);
 //Se não existir tmp, então não encontrou uma nova linha, por isso
 //concatenamos a storage e o buffer e enviamos para o tmp
 //Assim o returner será nulo e isso vai ativar novamente o while loop da função principal
@@ -174,7 +174,7 @@ char	*get_next_line(int fd)
 		{
 			valid = read(fd, buffer, BUFFER_SIZE);
 //Lemos (read) um número BUFFER_SIZE de caracteres e
-//armazenamos no ponteiro buffer (nāo entendi)
+//armazenamos no ponteiro buffer
 			returner = feed_storage(&storage, &buffer, valid);
 //Enchemos entāo a storage com tudo o que o buffer encontrar e
 //colocamos no returner a storage ou o buffer

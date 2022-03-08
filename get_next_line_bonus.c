@@ -6,7 +6,7 @@
 /*   By: lleiria- <lleiria-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/04 16:47:55 by lleiria-          #+#    #+#             */
-/*   Updated: 2022/03/07 12:43:52 by lleiria-         ###   ########.fr       */
+/*   Updated: 2022/03/07 15:52:14 by lleiria-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static char	*valid_buffer(char **storage, char **buffer, size_t buflen)
 	size_t	storlen;
 
 	storlen = ft_strlen(*storage);
-	returner = (char *)malloc(sizeof(char) * buflen + storlen +/Sabe 1);
+	returner = (char *)malloc(sizeof(char) * buflen + storlen + 1);
 	if (!returner)
 		return (0);
 	ft_memcpy(returner, *storage, storlen);
@@ -53,7 +53,7 @@ static char	*feed_storage(char **storage, char **buffer, size_t valid)
 		returner = valid_buffer(storage, buffer, (tmp - *buffer) + 1);
 	else
 	{
-		tmp = ft_strjoin(*storage, buffer);
+		tmp = ft_strjoin(*storage, *buffer);
 		if (*storage)
 			free(*storage);
 		*storage = tmp;

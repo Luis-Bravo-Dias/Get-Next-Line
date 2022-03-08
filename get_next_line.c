@@ -6,7 +6,7 @@
 /*   By: lleiria- <lleiria-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 12:50:50 by lleiria-          #+#    #+#             */
-/*   Updated: 2022/03/07 12:10:37 by lleiria-         ###   ########.fr       */
+/*   Updated: 2022/03/08 12:05:54 by lleiria-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static char	*valid_buffer(char **storage, char **buffer, size_t buflen)
 	return (returner);
 }
 
-static	char *feed_storage(char **storage, char **buffer, size_t valid)
+static char	*feed_storage(char **storage, char **buffer, size_t valid)
 {
 	char	*tmp;
 	char	*returner;
@@ -53,7 +53,7 @@ static	char *feed_storage(char **storage, char **buffer, size_t valid)
 		returner = valid_buffer(storage, buffer, (tmp - *buffer) + 1);
 	else
 	{
-		tmp = ft_strjoin(*storage, buffer);
+		tmp = ft_strjoin(*storage, *buffer);
 		if (*storage)
 			free(*storage);
 		*storage = tmp;
